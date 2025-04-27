@@ -1,0 +1,14 @@
+
+name: plant_disease_tf2.7
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.8
+  - pip
+  - pip:
+    - tensorflow-gpu==2.7.0
+    - keras==2.7.0
+    - tensorflow-estimator==2.7.0
+    - tensorflow-io-gcs-filesystem==0.24.0
+    - tensorflow-hub==0.12.0
