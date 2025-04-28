@@ -1,36 +1,30 @@
-# Use Python 3.10 slim as base image
+# Use Python 3.10 slim image
 FROM python:3.10-slim
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install necessary dependencies
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first to leverage Docker cache
+# Copy requirement file first and install
 COPY requirements.txt .
 
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
+# Copy all project files
 COPY . .
 
-# Create .streamlit directory and copy configuration files if they exist
+# Set Streamlit configs (if needed)
 RUN mkdir -p ~/.streamlit
-COPY config.toml ~/.streamlit/ 2>/dev/null || true
-COPY credentials.toml ~/.streamlit/ 2>/dev/null || true
+COPY config.toml ~/.streamlit/
+COPY credentials.toml ~/.streamlit/
 
-# Expose port 8501 for Streamlit
+# Expose port for Streamlit
 EXPOSE 8501
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
-ENV STREAMLIT_SERVER_PORT=8501
-ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
-
-# Run the application
-CMD ["streamlit", "run", "main.py"]
+# Command to run Streamlit app
+CMD ["streamlit", "run", "main.py", "--server.port=8501", "--server.address=0.0.0.0"]
